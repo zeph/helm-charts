@@ -1,9 +1,9 @@
+{{- range $tunnel := .Values.argo.tunnels }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cloudflared.fullname" . }}
+  name: tunnel-{{ $tunnel.hostname }}
 spec:
-  # FIXME: we need to replicate for each tunnel/fqdn
   replicas: {{ .Values.replicaCount }}
   template:
     spec:
@@ -16,4 +16,4 @@ spec:
           # 
           # FIXME: secrets mounted
           # FIXME: cmd args[]
-          
+{{- end }}
