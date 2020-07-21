@@ -18,9 +18,13 @@ spec:
         - name: tunnel-{{ $tunnel.hostname | b64enc | lower }}
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          args:
+          - tunnel
+          - --no-autoupdate 
+          - --hostname {{ $tunnel.hostname }}
+          - --url {{ $tunnel.url }}
           # FIXME: liveness probe
           # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
           # 
           # FIXME: secrets mounted
-          # FIXME: cmd args[]
 {{- end }}
