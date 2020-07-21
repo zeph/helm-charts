@@ -1,16 +1,23 @@
 {{- range $tunnel := .Values.argo.tunnels }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tunnel-{{ $tunnel.hostname }}
+  name: tunnel-{{ $tunnel.hostname | b64enc | lower }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ $.Values.replicas }}
+  selector:
+    matchLabels:
+      app: tunnel-{{ $tunnel.hostname | b64enc | lower }}
   template:
+    metadata:
+        labels:
+          app: tunnel-{{ $tunnel.hostname | b64enc | lower }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: tunnel-{{ $tunnel.hostname | b64enc | lower }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
           # FIXME: liveness probe
           # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
           # 
