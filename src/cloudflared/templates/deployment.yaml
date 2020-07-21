@@ -20,9 +20,9 @@ spec:
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           args:
           - tunnel
-          - --no-autoupdate 
-          - --hostname {{ $tunnel.hostname }}
-          - --url {{ $tunnel.url }}
+          - --no-autoupdate
+          - --hostname {{ $tunnel.hostname }} # WARN: this will fail in absence of a configuration
+          - {{ $tunnel.url }}
           # FIXME: liveness probe
           # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
           # 
