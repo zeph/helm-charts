@@ -21,10 +21,20 @@ spec:
           args:
           - tunnel
           - --no-autoupdate
-          - --hostname {{ $tunnel.hostname }} # WARN: this will fail in absence of a configuration
-          - {{ $tunnel.url }}
+          env:
+          - name: TUNNEL_URL
+            value: {{ $tunnel.url }}
+          - name: TUNNEL_HOSTNAME
+            value: {{ $tunnel.hostname }}
           # FIXME: liveness probe
           # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
           # 
-          # FIXME: secrets mounted
+          volumeMounts:
+          - mountPath: /etc/cloudflared
+            name: tunnel-certificate
+            readOnly: true
+      volumes:
+      - name: tunnel-certificate
+        secret:
+          secretName: {{ $tunnel.hostname }}
 {{- end }}
