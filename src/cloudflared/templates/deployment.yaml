@@ -3,19 +3,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tunnel-{{ $tunnel.hostname | b64enc | lower }}
+  name: tunnel-{{ $tunnel.hostname | sha1sum }}
 spec:
-  replicas: {{ $.Values.replicas }}
+  replicas: 1 # FIXME: we will get conflicts spawning more than one per tunnel
   selector:
     matchLabels:
-      app: tunnel-{{ $tunnel.hostname | b64enc | lower }}
+      app: tunnel-{{ $tunnel.hostname | sha1sum }}
   template:
     metadata:
         labels:
-          app: tunnel-{{ $tunnel.hostname | b64enc | lower }}
+          app: tunnel-{{ $tunnel.hostname | sha1sum }}
     spec:
       containers:
-        - name: tunnel-{{ $tunnel.hostname | b64enc | lower }}
+        - name: tunnel-{{ $tunnel.hostname | sha1sum }}
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           args:
